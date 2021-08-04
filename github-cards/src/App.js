@@ -7,16 +7,17 @@ class App extends React.Component {
   state = {
     name:'cqian12',
     userData: [],
-    followers: []
+    followers: [],
+    inputVal:''
   }
   
   componentDidMount() {
-    axios.get(`https://api.github.com/users/${this.state.name}`)
+    axios.get(`https://api.github.com/users/cqian12`)
     .then(res => {
       this.setState({...this.state,userData:res.data})
       console.log(this.state.userData)
     })
-    .then(axios.get('https://api.github.com/users/cqian12/followers')
+    .then(axios.get(`https://api.github.com/users/cqian12/followers`)
       .then(response =>
         this.setState({...this.state,followers:response.data})
           ))
@@ -26,19 +27,22 @@ class App extends React.Component {
   componentDidUpdate() {
     axios.get(`https://api.github.com/users/${this.state.name}`)
     .then(res => {
-      console.log(res.data)
       this.setState({...this.state,userData:res.data})
     })
+    .then(axios.get(`https://api.github.com/users/${this.state.name}/followers`)
+      .then(response =>
+        this.setState({...this.state,followers:response.data})
+          ))
     .catch(err => console.log(err))
   }
 
   inputChange = (event) => {
-    this.setState({...this.state,name:event.target.value})
+    this.setState({...this.state,inputVal:event.target.value})
   }
   
   clickEvt = (event) => {
     event.preventDefault()
-    
+    this.setState({...this.state,name:this.state.inputVal,inputVal:''})
   }
 
   render() {
